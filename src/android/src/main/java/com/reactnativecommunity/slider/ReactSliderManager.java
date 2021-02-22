@@ -23,6 +23,7 @@ import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.UIManagerModule;
 import com.facebook.react.uimanager.ViewProps;
 import com.facebook.react.uimanager.annotations.ReactProp;
+import com.facebook.react.uimanager.annotations.ReactPropGroup;
 import com.facebook.yoga.YogaMeasureFunction;
 import com.facebook.yoga.YogaMeasureMode;
 import com.facebook.yoga.YogaMeasureOutput;
@@ -31,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
+import android.content.res.Resources;
 
 /**
  * Manages instances of {@code ReactSlider}.
@@ -227,6 +229,33 @@ public class ReactSliderManager extends SimpleViewManager<ReactSlider> {
       stringList.add((String)item);
     }
     view.setAccessibilityIncrements(stringList);
+  }
+
+  public static int dpToPx(int dp) {
+    return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
+  }
+
+  public static int pxToDp(int px) {
+    return (int) (px / Resources.getSystem().getDisplayMetrics().density);
+  }
+
+  @ReactPropGroup(names = {
+      ViewProps.PADDING,
+      ViewProps.PADDING_LEFT,
+      ViewProps.PADDING_TOP,
+      ViewProps.PADDING_RIGHT,
+      ViewProps.PADDING_BOTTOM,
+    }, customType = "Style")
+
+  public void setStyle(ReactSlider view, int index, Integer value) {
+    value = dpToPx(value);
+    if(index == 0) {
+      view.setPadding(value, value, value, value);
+    } else {
+      int array[] = {view.getPaddingLeft(), view.getPaddingTop(), view.getPaddingRight(), view.getPaddingBottom()};
+      array[index - 1] = value;
+      view.setPadding(array[0], array[1], array[2], array[3]);
+    }
   }
 
   @Override
